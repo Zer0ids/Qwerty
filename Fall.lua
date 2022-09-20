@@ -1,7 +1,7 @@
 -- SOME THINGS MAY NOT WORK WELL! --
 -- PLEASE BE CAUTIOUS ABOUT IT! --
 
--- loadstring(game:HttpGet("https://github.com/Zer0ids/Qwerty/blob/main/Fall.lua", true))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Zer0ids/Qwerty/main/Fall.lua", true))()
 local humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 
 local lib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
