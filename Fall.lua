@@ -1,3 +1,6 @@
+-- SOME THINGS MAY NOT WORK WELL! --
+-- PLEASE BE CAUTIOUS ABOUT IT! --
+
 local humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 
 local lib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
