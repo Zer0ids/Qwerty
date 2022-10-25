@@ -2,7 +2,13 @@
 
 (If you don't know how to operate this script, it is recommended to read this first!)
 
-***Ignore this...*** ~(Thanks you for using this script. I do appreciate the efforts!)~
+### How to get the Source?
+```lua
+-- Usage for script: --
+local self = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zer0ids/Qwerty/main/GlobalHitboxExtend/Source.lua",true))()
+
+-- the "self" variable will be used during this documentation... --
+```
 
 ## Want to change the Hitbox Size?
 You can either do these functions below:
