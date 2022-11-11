@@ -24,9 +24,9 @@ local function setflag(name,...) -- flag savings
             local fl1 = write(name,json.encode(args))
             local fl2 = writefile(name,json.encode(args))
             if not fl1 then
-                return json.decode(readfile(fl2))
+                return json.encode(readfile(fl2))
             elseif not fl2 then
-                return json.decode(read(fl1))
+                return json.encode(read(fl1))
             end
         end
     end
@@ -36,10 +36,10 @@ if write or writefile then
         local save1 = read(write("genv_properties", properties)) -- if executor only supports "read" and "write"
         local save2 = readfile(writefile(properties)) -- if executor only supports "readfile" and "writefile"
         if not save1 then -- no "read" and "write"
-            local lot1 = setflag("props1",table.sort(json.encode(save1))).__index
+            local lot1 = setflag("props1",table.sort(json.decode(save1))).__index
             getgenv.NewProperties = writefile("Getgenv_NewProperties", lot1)
         elseif not save2 then -- no "readfile" and "writefile"
-            local lot2 = setflag("props2",table.sort(json.encode(save1))).__index
+            local lot2 = setflag("props2",table.sort(json.decode(save1))).__index
             getgenv.NewProperties = write("Getgenv_NewProperties", lot2)
         end
     end
