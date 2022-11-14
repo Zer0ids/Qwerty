@@ -1,1 +1,5 @@
-print("Outdated Script");print("Sorry")
+local pathFile = ""
+
+print("Outdated file. Reloading new version...")
+wait(1)
+loadstring(game:HttpGet(pathFile))()
