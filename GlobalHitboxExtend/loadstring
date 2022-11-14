@@ -1,4 +1,4 @@
 -- When it is your first time using this, it is recomended to read the documentation before you are able to use this utility! --
 -- Documentation: https://github.com/Zer0ids/Qwerty/blob/main/GlobalHitboxExtend/Documentation.md --
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Zer0ids/Qwerty/main/GlobalHitboxExtend/Source.lua",true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Zer0ids/Qwerty/main/GlobalHitboxExtend/NewSource.lua",true))()
