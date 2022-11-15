@@ -1,5 +1,8 @@
 # Hitbox Extend Documentation
+<<<<<<< HEAD
+(If you don't know anything about this script, it is recommended to read this!)
 
+=======
 (If you don't know how to operate this script, it is recommended to read this first!)
 
 ### How to get the Source?
@@ -89,3 +92,5 @@ self:ResetHitboxSize() -- resets hitbox sizes
 Later on, I'll be making player arguments so that the players, you want to target, can be affected by this...
 
 Thanks for using this script, by the way!
+
+>>>>>>> c175cc77c8e5a4c5af27f2f96aad18957b3670ab
