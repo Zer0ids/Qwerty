@@ -1,8 +1,4 @@
 # Hitbox Extend Documentation
-<<<<<<< HEAD
-(If you don't know anything about this script, it is recommended to read this!)
-
-=======
 (If you don't know how to operate this script, it is recommended to read this first!)
 
 ### How to get the Source?
