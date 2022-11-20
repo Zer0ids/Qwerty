@@ -1,4 +1,4 @@
-local hub = {0}
+local hub = {PlaceId=0}
 
 local obbyhub = Instance.new("ScreenGui")
 local loadingframe = Instance.new("Frame")
@@ -77,7 +77,7 @@ placelabel.TextWrapped = true
 
 wait(1)
 
-if hub[1] == 8003084678 then
+if hub["PlaceId"] == 8003084678 then
 	placelabel.Text = "Place id confirmed! [oMega Obby 🌟 625 Stages!]"
 	wait(2)
 	placelabel.Text = "Loading script..."
