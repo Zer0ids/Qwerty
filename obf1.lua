@@ -91,4 +91,8 @@ else
 	obbyhub:Destroy()
 end
 
+function hub:ChangeId(id)
+	hub.PlaceId = id
+end
+
 return hub
