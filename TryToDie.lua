@@ -1,7 +1,18 @@
--- lol, remake...
+--[[
+
+
+REMAKE SOON!
+
+Since new levels are added, this script is sadly outdated.
+This is bullcrap now.
+
+
+]]--
+
 
 
 local plr = game.Players.LocalPlayer
+please:Kick("REMAKE SOON")
 
 if not game.PlaceId == 5901548022 then
   plr:Kick("...")
