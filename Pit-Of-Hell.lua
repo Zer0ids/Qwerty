@@ -1,3 +1,15 @@
+--[[
+
+I WILL BE MAKING A REMAKE LATER ON...
+
+
+]]--
+game.Players.LocalPlayer:Kick("Remake soon...")
+
+
+
+
+
 --> Render <--
 local renderstepped = game:GetService("RunService").RenderStepped
 
