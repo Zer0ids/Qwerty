@@ -1,3 +1,6 @@
+-- outdated script. plus, it works like bullsh-t (works very bad)
+game.Players.LocalPlayer:Kick("outdated script")
+
 local orion = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local window = orion:MakeWindow({Name = "Get to the Top UI",HidePremium = false,SaveConfig = false,IntroEnabled = true})
 local main = window:MakeTab({Name = "Main",Icon = "",PremiumOnly = false})
