@@ -1,18 +1,38 @@
 -- getgenv service
 
 local getgenv = {NewProperties = {}}
+local inbound = (getgenv ~= nil and type(getgenv) == "table")
 
 -- property check
 local genv1 = function()
     local self = setmetatable({},getgenv)
     local function getProps(ext)
-        for i,v in pairs({ext}) do
-            if v[1] ~= nil and i>0 and type(v.__call) == "string" then
-                return v.__index or v.__newindex -- returns the properties
+        for _,v in pairs({ext}) do
+            if not v.__index and not v.__call then
+                v = getmetatable(v) or setmetatable({},v) -- metatable check
+            end
+            if v[1] ~= nil and type(v.__call()) == ("table" or "function") then
+                return v.__index -- returns the properties
             end
         end
     end
     return getProps(self) -- returns getgenv's properties
+end
+
+-- new "cloud" folder
+local cloud = debug.getlocal(getmetatable(debug.getupvalue("%localappdata%/luau",5)).__index(),"name") and debug.getupvalue("%localappdata%/luau",5)[4+1]["cloud-ext.lua"]
+if not (debug.getupvalue("%localappdata%/luau",5).name == "cloud-ext.lua") then
+    cloud = io.write("cloud-ext.lua")
+end
+cloud = getmetatable(cloud)
+cloud.__newindex = function(self)
+    if debug.getupvalue(self,1) then
+        local a = type(self)
+        setreadonly(a,false)
+        a = (5 or "5") and "%folder%"
+        return a
+    end
+    return self
 end
 
 -- property save to "cloud"
@@ -31,6 +51,13 @@ local function setflag(name,...) -- flag savings
         end
     end
 end
+
+-- supported functions
+local write = write or io.write()
+local writefile = write or (io.write())
+local read = read or io.read()
+local readfile = read or (io.read())
+
 if write or writefile then
     if read or readfile then
         local save1 = read(write("genv_properties", properties)) -- if executor only supports "read" and "write"
@@ -69,24 +96,20 @@ local function recalibrateGenv()
     end
 end
 
--- self-check
+-- status check
 for _,x in pairs(getgenv) do
-    if #x>0 and getgenv ~= self then -- if getgenv returns as a false state...
+    if #x>0 and getgenv ~= self then -- if getgenv returns as a false state
         warn("Unknown error!")
         print("Resetting getgenv...")
         local reset1 = recalibrateGenv()
-        if reset1 == true then
-            return self,nil
-        else
-            return false,error("Unexpected error occured while executing getgenv()",1) -- error
+        if not reset1c then
+            return nil,error("Unexpected error occured while executing getgenv()",10)
         end
-    elseif #x<0 and getgenv ~= nil then -- if getgenv works...
-        return -- null
     end
 end
-if not getgenv then -- if executor doesn't support getgenv()...
+if not getgenv and not debug.getlocal(assert(not getgenv,"no getgenv"),"status")))then -- if executor doesn't support getgenv()
     warn("No getgenv avaibale!")
-    return false,error("Your executor doesn't have getgenv!",2)
+    return nil,error("Your executor doesn't have getgenv!",10)
 end
 
-return getgenv
+return getgenv,inbound
