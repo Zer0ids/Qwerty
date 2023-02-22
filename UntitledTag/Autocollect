@@ -1,7 +1,9 @@
 local self = {}
 
+local conn
+
 function self:Load()
-	game:GetService("RunService"):BindToRenderStep("Autocollect",Enum.RenderPriority.First.Value,function()
+	conn = game:GetService("RunService").Stepped:Connect(function()
 		for _,v in pairs(game.Workspace:GetDescendants()) do
 			if v:IsA("MeshPart") and v.MeshId == "rbxassetid://8483581926" then
 				game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = v.CFrame
@@ -10,7 +12,7 @@ function self:Load()
 	end)
 end
 function self:Unload()
-	game:GetService("RunService"):UnbindFromRenderStep("Autocollect")
+	conn:Disconnect()
 end
 
 return self
