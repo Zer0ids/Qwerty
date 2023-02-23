@@ -1,127 +1,332 @@
--- Version: 3.0
+-- Version: 3.1
 
 
-repeat wait() until game:IsLoaded()
 
 local you = game.Players.LocalPlayer
 local lighting = game.Lighting
-local infjumpLoader = loadstring(game:HttpGet("https://pastebin.com/raw/WRA3sPu9"))() -- from "Obby Hub"
-local coinLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zer0ids/Qwerty/main/UntitledTag/Autocollect"))()
+local char = you.Character
+local humanoid = char:FindFirstChildOfClass("Humanoid")
 
 local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
 local window = lib:MakeWindow({
-	Name="Ranxware | UTG V3.0",
-	SaveConfig=true,
-	ConfigFolder="RanxwareUTG",
+	Name="Ranxware | UTG V3.1",
+	SaveConfig=false,
 	IntroEnabled=true,
 	IntroText="Ranxware V2"
 })
-local function let(domain,action,args)
-	if action:lower() == "maketab" then
-		return domain:MakeTab({
-			Name=args.Name and args.Name or "Unknown Tab",
-			Icon=args.Icon and args.Icon or nil
-		})
-	elseif action:lower() == "addsection" then
-		return domain:AddSection({
-			Name=args.Name and args.Name or "Unknown Section",
-		})
-	elseif action:lower() == "addbutton" then
-		return domain:AddButton({
-			Name=args.Name and args.Name or "Unknown Button",
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "addtoggle" then
-		return domain:AddToggle({
-			Name=args.Name and args.Name or "Unknown Toggle",
-			Default=args.Default and args.Default or false,
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "addcolorpicker" then
-		return domain:AddColorpicker({
-			Name=args.Name and args.Name or "Unknown Colorpicker",
-			Default=args.Default and args.Default or Color3.new(1,1,1),
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "addslider" then
-		return domain:AddSlider({
-			Name=args.Name or "Unknown Slider",
-			Min=args.Range[1] or 0,
-			Max=args.Range[2] or 100,
-			Default=args.Default or args.Range[1] or 0,
-			Increment=args.Increment or 1,
-			ValueName=args.Suffix or nil,
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "addlabel" then
-		return domain:AddLabel(
-			args.Text or "Unknown Label"
-		)
-	elseif action:lower() == "addparagraph" then
-		return domain:AddParagraph(
-			args.Title or "Unknown Paragraph",
-			args.Content or "Unknown paragraph content"
-		)
-	elseif action:lower() == "addinput" then
-		return domain:AddTextbox({
-			Name=args.Name or "Unknown Input",
-			Default=args.Default or "",
-			TextDisappear=args.TextDisappear or false,
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "addbind" then
-		return domain:AddBind({
-			Name=args.Name or "Unknown Bind",
-			Default=args.Default or nil,
-			Callback=args.Callback or nil
-		})
-	elseif action:lower() == "adddropdown" then
-		return domain:AddDropdown({
-			Name=args.Name or "Unknown Dropdown",
-			Options=args.Options or {1,2,3},
-			Default=args.Default or args.Options[1] or 1,
-			Callback=args.Callback or nil
-		})
-	end
-end
-local function notify(title,content,image)
-	return lib:MakeNotification({
-		Name=title or "Ranxware V4",
-		Content=content,
-		Image=image or nil,
-		Time=8
-	})
-end
 
-local tag = let(window,"maketab",{Name="Tag Cheats"})
-local movement = let(window,"maketab",{Name="Movement"})
-local experi = let(window,"maketab",{Name="Experimental",Icon="rbxassetid://7733920644"})
-local misc = let(window,"maketab",{Name="Misc"})
+local tag = window:MakeTab({Name="Tag Cheats"})
+local movement = window:MakeTab({Name="Movement"})
+local experi = window:MakeTab({Name="Experimental"})
+local misc = window:MakeTab({Name="Misc"})
 
-local hitboxes = let(tag,"addsection",{Name="Hitboxes"})
-local autotag = let(tag,"addsection",{Name="Autotag [BETA]"})
-local _humanoid = let(movement,"addsection",{Name="Humanoid"})
-local physical = let(movement,"addsection",{Name="Physical"})
-local exp_main = let(experi,"addsection",{Name="Main"})
-local visuals = let(experi,"addsection",{Name="Visuals"})
+local hitboxes = tag:AddSection({Name="Hitboxes"})
+local autotag = tag:AddSection({Name="Autotag [BETA]"})
+local _humanoid = movement:AddSection({Name="Humanoid"})
+local physical = movement:AddSection({Name="Physical"})
+local exp_main = experi:AddSection({Name="Main"})
+local visuals = experi:AddSection({Name="Visuals [BETA]"})
 
-local hbcon
+local hbcon = false
 local hbsize = 2
-let(hitboxes,"addtoggle",{Name="Hitbox Extend",Callback=function(value)
-	if value then
-		hbcon = game:GetService("RunService").Stepped:Connect(function()
-			for _,i in next,game.Players:GetPlayers() do
-				if i ~= you then
-					local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
-					if root then
-						root.Size = Vector3.new(hbsize,hbsize,hbsize)
-						root.Transparency = 0.5
-					end
+hitboxes:AddToggle({
+	Name="Hitbox Extend",
+	Default=false,
+	Callback=function(value)
+		if value then
+			hbcon = true
+		else
+			hbcon = false
+		end
+	end,
+})
+hitboxes:AddSlider({
+	Name="Hitbox Size",
+	Min=2,Max=15,
+	Default=2,
+	Increment=1,
+	ValueName="studs",
+	Callback=function(value)
+		hbsize = value
+	end,
+})
+local atcon = false
+local at_teamcheck = false
+local at_runnercheck = true
+autotag:AddToggle({
+	Name="Autotag",
+	Default=false,
+	Callback=function(value)
+		if value then
+			atcon = true
+		else
+			atcon = false
+		end
+	end,
+})
+autotag:AddToggle({
+	Name="Team Check",
+	Default=false,
+	Callback=function(value)
+		at_teamcheck = value
+	end,
+})
+autotag:AddToggle({
+	Name="Runner/Alive Check",
+	Default=true,
+	Callback=function(value)
+		at_runnercheck = value
+	end,
+})
+
+local wsval,jpval = 30,32
+local wscon,jpcon = false,false
+local changeWs,changeJp
+_humanoid:AddToggle({
+	Name="Walkspeed",
+	Default=false,
+	Callback=function(value)
+		if value then
+			wscon = true
+			changeWs = function()
+				humanoid.WalkSpeed = wsval
+			end
+			changeWs()
+		else
+			wscon = false
+		end
+	end,
+})
+_humanoid:AddSlider({
+	Name="Walkspeed Value",
+	Min=26,Max=65,
+	Default=30,
+	Increment=1,
+	Callback=function(value)
+		wsval = value
+	end,
+})
+_humanoid:AddToggle({
+	Name="Jumppower",
+	Default=false,
+	Callback=function(value)
+		if value then
+			jpcon = true
+			changeJp = function()
+				humanoid.UseJumpPower = true
+				humanoid.JumpPower = jpval
+			end
+			changeJp()
+		else
+			jpcon = false
+		end
+	end,
+})
+_humanoid:AddSlider({
+	Name="Jumppower Value",
+	Min=30,Max=90,
+	Default=32,
+	Increment=1,
+	Callback=function(value)
+		jpval = value
+	end,
+})
+local fclimbcon,noclipcon = false,false
+local infj = false
+physical:AddToggle({
+	Name="Infinite Jump",
+	Default=false,
+	Callback=function(value)
+		if value then
+			infj = true
+		else
+			infj = false
+		end
+	end,
+})
+physical:AddToggle({
+	Name="Fast Climb",
+	Default=false,
+	Callback=function(value)
+		if value then
+			fclimbcon = true
+		else
+			fclimbcon = false
+		end
+	end,
+})
+physical:AddToggle({
+	Name="Noclip",
+	Default=false,
+	Callback=function(value)
+		if value then
+			noclipcon = true
+		else
+			noclipcon = false
+		end
+	end,
+})
+
+local atcoin = false
+exp_main:AddToggle({
+	Name="Autocollect Coins",
+	Default=false,
+	Callback=function(value)
+		if value then
+			atcoin = true
+		else
+			atcoin = false
+		end
+	end,
+})
+local esp = false
+local boxes = false
+local chams = false
+local tracers = false
+local names = false
+local roles = false
+local teamcheck = false
+local tracerorigin = "Bottom"
+visuals:AddLabel("ESP NOTE:","Setting to higher FOV than 120 will cause visuals to be offset to the character!")
+visuals:AddToggle({
+	Name="Enable ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			esp = true
+		else
+			esp = false
+		end
+	end,
+})
+visuals:AddToggle({
+	Name="Box ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			boxes = true
+		else
+			boxes = false
+		end
+	end,
+})
+visuals:AddToggle({
+	Name="Cham ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			chams = true
+		else
+			chams = false
+		end
+	end,
+})
+visuals:AddToggle({
+	Name="Tracer ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			tracers = true
+		else
+			tracers = false
+		end
+	end,
+})
+visuals:AddToggle({
+	Name="Name ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			names = true
+		else
+			names = false
+		end
+	end,
+})
+visuals:AddToggle({
+	Name="Role ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			roles = true
+		else
+			roles = false
+		end
+	end,
+})
+visuals:AddDropdown({
+	Name="Tracer Origin",
+	Options={"Bottom","Middle","Top","Mouse"},
+	Default="Bottom",
+	Callback=function(option)
+		tracerorigin = option
+	end,
+})
+visuals:AddToggle({
+	Name="Team Check",
+	Default=true,
+	Callback=function(value)
+		if value then
+			teamcheck = true
+		else
+			teamcheck = false
+		end
+	end,
+})
+
+local fbcon = false
+misc:AddToggle({
+	Name="Fullbright",
+	Default=false,
+	Callback=function(value)
+		if value then
+			fbcon = true
+		else
+			fbcon = false
+		end
+	end,
+})
+
+local function connect(signal, callback)
+	local connection = signal:Connect(callback)
+	table.insert(lib.Connections,connection)
+	return connection
+end
+
+connect(humanoid:GetPropertyChangedSignal("WalkSpeed"),function()
+	if wscon then
+		changeWs()
+	end
+end)
+connect(humanoid:GetPropertyChangedSignal("JumpPower"),function()
+	if jpcon then
+		changeJp()
+	end
+end)
+connect(humanoid.Climbing,function()
+	if fclimbcon then
+		humanoid.Jump = true
+	end
+end)
+-- connection, in case if you somehow get voided (with noclip/autocollect coins)...
+connect(game:GetService("RunService").Stepped,function()
+	if you.Character then
+		char = you.Character
+		humanoid = char:FindFirstChildOfClass("Humanoid")
+	end
+end)
+connect(game:GetService("RunService").Stepped,function()
+	if hbcon then
+		for _,i in next,game.Players:GetPlayers() do
+			if i ~= you then
+				local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
+				if root then
+					root.Size = Vector3.new(hbsize,hbsize,hbsize)
+					root.Transparency = .5
 				end
 			end
-		end)
+		end
 	else
-		hbcon:Disconnect()
 		for _,i in next,game.Players:GetPlayers() do
 			if i ~= you then
 				local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
@@ -132,42 +337,46 @@ let(hitboxes,"addtoggle",{Name="Hitbox Extend",Callback=function(value)
 			end
 		end
 	end
-end})
-let(hitboxes,"addslider",{Name="Hitbox Size",Range={2,15},Default=2,Suffix="studs",Callback=function(value)
-	hbsize = value
-end})
-local atcon
-local at_teamcheck = false
-local at_runnercheck = true
-let(autotag,"addtoggle",{Name="Autotag",Callback=function(value)
-	if value then
-		atcon = game:GetService("RunService").Stepped:Connect(function()
-			local youroot = you.Character:FindFirstChildOfClass("Humanoid").RootPart
-			for _,i in next,game.Players:GetPlayers() do
-				if i ~= you then
-					if at_runnercheck then
-						if you.PlayerRole.Value ~= "Runner" and you.PlayerRole.Value ~= "Dead" then
-							if at_teamcheck then
-								if i.PlayerRole.Value ~= you.PlayerRole.Value then
-									local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
-									if root then
-										local distance = (root.Position-youroot.Position).Magnitude
-										if distance <= root.Size.Magnitude then
-											mouse1click()
-										end
-									end
-								end
-							else
-								local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
-								if root then
-									local distance = (root.Position-youroot.Position).Magnitude
-									if distance <= root.Size.Magnitude then
-										mouse1click()
-									end
-								end
-							end
-						end
-					else
+	if noclipcon then
+		for _,p in next,char:GetDescendants() do
+			if p:IsA("BasePart") then
+				p.CanCollide = false
+			end
+		end
+	end
+	if fbcon then
+		lighting.Brightness = 2
+		lighting.ClockTime = 14
+		lighting.FogEnd = 100000
+		lighting.GlobalShadows = false
+		lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+		lighting.ExposureCompensation = 0
+		for _,atmosphere in next,lighting:GetChildren() do
+			if atmosphere:IsA("Atmosphere") then
+				atmosphere:Destroy()
+			end
+		end
+	end
+	if atcoin then
+		for _,v in pairs(workspace:GetDescendants()) do
+			if v:IsA("MeshPart") and v.MeshId == "rbxassetid://8483581926" then
+				humanoid.RootPart.CFrame = v.CFrame
+			end
+		end
+	end
+end)
+connect(game:GetService("UserInputService").JumpRequest,function()
+	if infj then
+		humanoid.RootPart.Velocity = Vector3.new(humanoid.RootPart.Velocity.X,humanoid.JumpPower or humanoid.JumpHeight,humanoid.RootPart.Velocity.Z)
+	end
+end)
+connect(game:GetService("RunService").Heartbeat,function()
+	local youroot = humanoid.RootPart
+	if atcon then
+		for _,i in next,game.Players:GetPlayers() do
+			if i ~= you then
+				if at_runnercheck then
+					if you.PlayerRole.Value ~= "Runner" and you.PlayerRole.Value ~= "Dead" then
 						if at_teamcheck then
 							if i.PlayerRole.Value ~= you.PlayerRole.Value then
 								local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
@@ -188,182 +397,60 @@ let(autotag,"addtoggle",{Name="Autotag",Callback=function(value)
 							end
 						end
 					end
-				end
-			end
-		end)
-	else
-		atcon:Disconnect()
-	end
-end})
-let(autotag,"addtoggle",{Name="Team Check",Callback=function(value)
-	at_teamcheck = value
-end})
-let(autotag,"addtoggle",{Name="Runner/Alive Check",Default=true,Callback=function(value)
-	at_runnercheck = value
-end})
-
-local wsval,jpval = 30,32
-local wscon,jpcon,wscon2,jpcon2
-let(_humanoid,"addtoggle",{Name="Walkspeed",Callback=function(value)
-	if value then
-		local humanoid = you.Character:FindFirstChildOfClass("Humanoid")
-		local function changeWs()
-			humanoid.WalkSpeed = wsval
-		end
-		changeWs()
-		wscon = humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(changeWs)
-		wscon2 = you.CharacterAdded:Connect(function(char)
-			humanoid = char:FindFirstChildOfClass("Humanoid")
-			changeWs()
-			wscon = humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(changeWs)
-		end)
-	else
-		wscon:Disconnect()
-		wscon2:Disconnect()
-	end
-end})
-let(_humanoid,"addslider",{Name="Walkspeed Value",Range={26,65},Default=30,Callback=function(value)
-	wsval = value
-end})
-let(_humanoid,"addtoggle",{Name="Jumppower",Callback=function(value)
-	if value then
-		local humanoid = you.Character:FindFirstChildOfClass("Humanoid")
-		local function changeJp()
-			humanoid.UseJumpPower = true
-			humanoid.JumpPower = wsval
-		end
-		changeJp()
-		jpcon = humanoid:GetPropertyChangedSignal("JumpPower"):Connect(changeJp)
-		jpcon2 = you.CharacterAdded:Connect(function(char)
-			humanoid = char:FindFirstChildOfClass("Humanoid")
-			changeJp()
-			jpcon = humanoid:GetPropertyChangedSignal("JumpPower"):Connect(changeJp)
-		end)
-	else
-		jpcon:Disconnect()
-		jpcon2:Disconnect()
-	end
-end})
-let(_humanoid,"addslider",{Name="Jumppower Value",Range={26,65},Default=30,Callback=function(value)
-	jpval = value
-end})
-local fclimbcon,fclimbcon2,noclipcon,noclipcon2
-let(physical,"addtoggle",{Name="Infinite Jump",Callback=function(value)
-	if value then
-		infjumpLoader:Load()
-	else
-		infjumpLoader:Unload()
-	end
-end})
-let(physical,"addtoggle",{Name="Fast Climb",Callback=function(value)
-	if value then
-		local humanoid = you.Character:FindFirstChildOfClass("Humanoid")
-		fclimbcon = humanoid.Climbing:Connect(function()
-			humanoid.Jump = true
-		end)
-		fclimbcon2 = you.CharacterAdded:Connect(function(char)
-			local humanoid = char:FindFirstChildOfClass("Humanoid")
-			fclimbcon = humanoid.Climbing:Connect(function()
-				humanoid.Jump = true
-			end)
-		end)
-	else
-		fclimbcon:Disconnect()
-		fclimbcon2:Disconnect()
-	end
-end})
-let(physical,"addtoggle",{Name="Noclip",Callback=function(value)
-	if value then
-		local char = you.Character
-		noclipcon = game:GetService("RunService").Stepped:Connect(function()
-			for _,p in next,char:GetDescendants() do
-				if p:IsA("BasePart") then
-					p.CanCollide = false
-				end
-			end
-		end)
-		noclipcon2 = you.CharacterAdded:Connect(function(nchar)
-			char = nchar
-			noclipcon = game:GetService("RunService").Stepped:Connect(function()
-				for _,p in next,char:GetDescendants() do
-					if p:IsA("BasePart") then
-						p.CanCollide = false
+				else
+					if at_teamcheck then
+						if i.PlayerRole.Value ~= you.PlayerRole.Value then
+							local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
+							if root then
+								local distance = (root.Position-youroot.Position).Magnitude
+								if distance <= root.Size.Magnitude then
+									mouse1click()
+								end
+							end
+						end
+					else
+						local root = i.Character:FindFirstChildOfClass("Humanoid").RootPart
+						if root then
+							local distance = (root.Position-youroot.Position).Magnitude
+							if distance <= root.Size.Magnitude then
+								mouse1click()
+							end
+						end
 					end
 				end
-			end)
-		end)
-	else
-		noclipcon:Disconnect()
+			end
+		end
 	end
-end})
-
-let(exp_main,"addtoggle",{Name="Autocollect Coins",Callback=function(value)
-	if value then
-		coinLoader:Load()
-	else
-		coinLoader:Unload()
-	end
-end})
-local esp = false
-local boxes = false
-local chams = false
-local tracers = false
-local names = false
-local roles = false
-local teamcheck = false
-local tracerorigin = "Bottom"
-let(visuals,"addtoggle",{Name="Enable ESP [Thanks to Sense]",Callback=function(value)
-	esp = value
-end})
-let(visuals,"addtoggle",{Name="Box ESP",Callback=function(value)
-	boxes = value
-end})
-let(visuals,"addtoggle",{Name="Cham ESP",Callback=function(value)
-	chams = value
-end})
-let(visuals,"addtoggle",{Name="Tracer ESP",Callback=function(value)
-	tracers = value
-end})
-let(visuals,"addtoggle",{Name="Name ESP",Callback=function(value)
-	names = value
-end})
-let(visuals,"addtoggle",{Name="Role ESP",Callback=function(value)
-	roles = value
-end})
-let(visuals,"adddropdown",{Name="Tracer Origin",Options={"Bottom","Top","Mouse","Middle"},Default="Bottom",Callback=function(option)
-	tracerorigin = option
-end})
-let(visuals,"addtoggle",{Name="Role Check",Callback=function(value)
-	teamcheck = value
-end})
+end)
 -- this took me forever to code this! :D
 local function addEsp(target)
 	local function addBox()
 		local box = Drawing.new("Square")
-		box.Color = Color3.new()
+		box.Color = Color3.new(1,1,1)
 		box.Thickness = 0.5
 		box.Filled = false
-		box.Transparency = 1;
+		box.Transparency = 1
+		return box
 	end
 	local function addLine()
 		local line = Drawing.new("Line")
-		line.Color = Color3.new()
+		line.Color = Color3.new(1,1,1)
 		line.Thickness = 0.5
 		return line
 	end
 	local function addText()
 		local text = Drawing.new("Text")
-		text.Color = Color3.new()
+		text.Color = Color3.new(1,1,1)
 		text.Size = 20
-		text.Outline = true
 		text.Center = true
+		text.Font = 3
 		return text
 	end
 	local function addCham()
-		local cham = Instance.new("BoxHandleAdornment",gethui and gethui() or game.CoreGui)
-		cham.Color3 = Color3.new()
+		local cham = Instance.new("BoxHandleAdornment",gethui() or game.CoreGui)
+		cham.Color3 = Color3.new(1,1,1)
 		cham.AlwaysOnTop = true
-		cham.ZIndex = 10
+		cham.ZIndex = 2
 		return cham
 	end
 	local function alive(target)
@@ -383,7 +470,7 @@ local function addEsp(target)
 	local rarm = addCham()
 	local lleg = addCham()
 	local rleg = addCham()
-	game.Players.PlayerRemoving:Connect(function(player)
+	connect(game.Players.PlayerRemoving,function(player)
 		if player == target then
 			box:Destroy()
 			tracer:Destroy()
@@ -398,31 +485,29 @@ local function addEsp(target)
 			rleg:Destroy()
 		end
 	end)
-	game:GetService("RunService").Stepped:Connect(function()
-		box.Color = target.Character.Torso.Color
-		tracer.Color = target.Character.Torso.Color
-		name.Color = target.Character.Torso.Color
-		role.Color = target.Character.Torso.Color
-		head.Color3 = target.Character.Torso.Color
-		torso.Color3 = target.Character.Torso.Color
-		larm.Color3 = target.Character.Torso.Color
-		rarm.Color3 = target.Character.Torso.Color
-		lleg.Color3 = target.Character.Torso.Color
-		rleg.Color3 = target.Character.Torso.Color
-		text.Color = target.Character.Torso.Color
+	connect(game:GetService("RunService").Stepped,function()
 		if alive(target) then
 			local mainpos,vis = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position)
-			local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position+Vector3.new(0,0.5,0))
+			local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position+Vector3.new(0,0.5,0))
 			local miscpos2 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position-Vector3.new(0,4,0))
-			if vis then
-				if not teamcheck then
-					if isSameTeam(target) then
-						vis = false
-					end
+			if not teamcheck then
+				if isSameTeam(target) then
+					box.Visible = false
+					tracer.Visible = false
+					name.Visible = false
+					role.Visible = false
+					text.Visible = false
+					head.Visible = false
+					torso.Visible = false
+					larm.Visible = false
+					rarm.Visible = false	
+					lleg.Visible = false
+					rleg.Visible = false
 				end
 			end
 			if boxes then
 				box.Visible = vis
+				box.Color = target.Character:FindFirstChild("Torso").Color
 				box.Size = Vector2.new((2350/mainpos.Z)+2.5,miscpos1.Y-miscpos2.Y)
 				box.Position = Vector2.new((mainpos.X-box.Size.X/2)-1,mainpos.Y-box.Size.Y/2)
 			else
@@ -435,12 +520,24 @@ local function addEsp(target)
 				rarm.Visible = true
 				lleg.Visible = true
 				rleg.Visible = true
-				head.Adornee = target.Character.Head
-				torso.Adornee = target.Character.Torso
-				larm.Adornee = target.Character["Left Arm"]
-				rarm.Adornee = target.Character["Right Arm"]
-				lleg.Adornee = target.Character["Left Leg"]
-				rleg.Adornee = target.Character["Right Leg"]
+				head.Color3 = target.Character:FindFirstChild("Torso").Color
+				torso.Color3 = target.Character:FindFirstChild("Torso").Color
+				larm.Color3 = target.Character:FindFirstChild("Torso").Color
+				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
+				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				head.Adornee = target.Character:FindFirstChild("Head")
+				torso.Adornee = target.Character:FindFirstChild("Torso")
+				larm.Adornee = target.Character:FindFirstChild("Left Arm")
+				rarm.Adornee = target.Character:FindFirstChild("Right Arm")
+				lleg.Adornee = target.Character:FindFirstChild("Left Leg")
+				rleg.Adornee = target.Character:FindFirstChild("Right Leg")
+				head.Size = target.Character:FindFirstChild("Head").Size
+				torso.Size = target.Character:FindFirstChild("Torso").Size
+				larm.Size = target.Character:FindFirstChild("Left Arm").Size
+				rarm.Size = target.Character:FindFirstChild("Right Arm").Size
+				lleg.Size = target.Character:FindFirstChild("Left Leg").Size
+				rleg.Size = target.Character:FindFirstChild("Right Leg").Size
 			else
 				head.Visible = false
 				torso.Visible = false
@@ -451,6 +548,7 @@ local function addEsp(target)
 			end
 			if tracers then
 				tracer.Visible = vis
+				tracer.Color = target.Character:FindFirstChild("Torso").Color
 				if tracerorigin == "Top" then
 					tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,0)
 					tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
@@ -469,15 +567,17 @@ local function addEsp(target)
 			end
 			if names then
 				name.Visible = vis
-				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				name.Color = target.Character:FindFirstChild("Torso").Color
+				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
 				name.Text = target.Name
 			else
 				name.Visible = false
 			end
 			if roles then
 				role.Visible = vis
-				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
-				name.Text = target.PlayerRole.Value
+				role.Color = target.Character:FindFirstChild("Torso").Color
+				role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				role.Text = target.PlayerRole.Value
 			else
 				role.Visible = false
 			end
@@ -485,7 +585,8 @@ local function addEsp(target)
 				name.Visible = false
 				role.Visible = false
 				text.Visible = vis
-				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				text.Color = target.Character:FindFirstChild("Torso").Color
+				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
 				text.Text = target.Name.." | "..target.PlayerRole.Value
 			else
 				text.Visible = false
@@ -510,35 +611,13 @@ for _,i in next,game.Players:GetPlayers() do
 		addEsp(i)
 	end
 end
-game.Players.PlayerAdded:Connect(function(i)
+connect(game.Players.PlayerAdded,function(i)
 	if i ~= you then
 		addEsp(i)
 	end
 end)
 
-local fbcon
-let(misc,"addtoggle",{Name="Fullbright",Callback=function(value)
-	if value then
-		fbcon = game:GetService("RunService").Stepped:Connect(function()
-			lighting.Brightness = 2
-			lighting.ClockTime = 14
-			lighting.FogEnd = 100000
-			lighting.GlobalShadows = false
-			lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-			lighting.ExposureCompensation = 0
-			for _,atmosphere in next,lighting:GetChildren() do
-				if atmosphere:IsA("Atmosphere") then
-					atmosphere:Destroy()
-				end
-			end
-		end)
-	else
-		fbcon:Disconnect()
-	end
-end})
-
 lib:Init()
-
 
 --[[
 
@@ -549,6 +628,7 @@ lib:Init()
 * 11/14/22 - Second version released (removed the useless authentication system; fixed bugs; added new features)
 * 12/29/22 - 2.5 version released
 * 2/14/23 - closed script... (update for v3 soon.)
-* 2/23/23 - Third version released (revamped features; new ui library [orion]; added esp [experimental])
+* 2/22/23 - Third version released (revamped features; new ui library [orion]; added esp [experimental])
+* 2/23/23 - [Third version was broken lol] v3.1 (bug fixes)
 
 ]]
