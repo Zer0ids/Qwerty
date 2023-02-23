@@ -187,7 +187,7 @@ local names = false
 local roles = false
 local teamcheck = false
 local tracerorigin = "Bottom"
-visuals:AddLabel("ESP NOTE:","Setting to higher FOV than 120 will cause visuals to be offset to the character!")
+visuals:AddParagraph("ESP NOTE:","Setting to higher FOV than 120 will cause visuals to be offset to the character!")
 visuals:AddToggle({
 	Name="Enable ESP",
 	Default=false,
