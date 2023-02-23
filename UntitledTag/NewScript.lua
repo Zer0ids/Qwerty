@@ -1,3 +1,5 @@
+-- version 3.0!
+
 do
 	local v0 = tonumber;
 	local v1 = string.byte;
