@@ -286,6 +286,18 @@ misc:AddToggle({
 		end
 	end,
 })
+local acontcon = false
+misc:AddToggle({
+	Name="Anti-HighContrast",
+	Default=false,
+	Callback=function(value)
+		if value then
+			acontcon = true
+		else
+			acontcon = false
+		end
+	end,
+})
 
 local function connect(signal, callback)
 	local connection = signal:Connect(callback)
@@ -354,6 +366,13 @@ connect(game:GetService("RunService").Stepped,function()
 		for _,atmosphere in next,lighting:GetChildren() do
 			if atmosphere:IsA("Atmosphere") then
 				atmosphere:Destroy()
+			end
+		end
+	end
+	if acontcon then
+		for _,i in next,lighting:GetChildren() do
+			if i:IsA("ColorCorrection") and i.Contrast == -2 and i.Saturation == .1 then -- high contrast element
+				i:Destroy()
 			end
 		end
 	end
@@ -441,7 +460,7 @@ local function addEsp(target)
 	local function addText()
 		local text = Drawing.new("Text")
 		text.Color = Color3.new(1,1,1)
-		text.Size = 20
+		text.Size = 11
 		text.Center = true
 		text.Font = 3
 		return text
@@ -449,6 +468,7 @@ local function addEsp(target)
 	local function addCham()
 		local cham = Instance.new("BoxHandleAdornment",gethui() or game.CoreGui)
 		cham.Color3 = Color3.new(1,1,1)
+		cham.Transparency = .5
 		cham.AlwaysOnTop = true
 		cham.ZIndex = 2
 		return cham
@@ -568,7 +588,7 @@ local function addEsp(target)
 			if names then
 				name.Visible = vis
 				name.Color = target.Character:FindFirstChild("Torso").Color
-				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				name.Text = target.Name
 			else
 				name.Visible = false
@@ -576,7 +596,7 @@ local function addEsp(target)
 			if roles then
 				role.Visible = vis
 				role.Color = target.Character:FindFirstChild("Torso").Color
-				role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				role.Text = target.PlayerRole.Value
 			else
 				role.Visible = false
@@ -586,7 +606,7 @@ local function addEsp(target)
 				role.Visible = false
 				text.Visible = vis
 				text.Color = target.Character:FindFirstChild("Torso").Color
-				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y+20)
+				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				text.Text = target.Name.." | "..target.PlayerRole.Value
 			else
 				text.Visible = false
