@@ -283,7 +283,7 @@ visuals:AddToggle({
 		else
 			rainbow_ = false
 		end
-end
+	end
 })
 
 local fbcon = false
@@ -317,27 +317,40 @@ local function connect(signal, callback)
 	return connection
 end
 
-connect(humanoid:GetPropertyChangedSignal("WalkSpeed"),function()
+local wst__;wst__ = connect(humanoid:GetPropertyChangedSignal("WalkSpeed"),function()
 	if wscon then
 		changeWs()
 	end
 end)
-connect(humanoid:GetPropertyChangedSignal("JumpPower"),function()
+local jpt__;jpt__ = connect(humanoid:GetPropertyChangedSignal("JumpPower"),function()
 	if jpcon then
 		changeJp()
 	end
 end)
-connect(humanoid.Climbing,function()
+local fct__;fct__ = connect(humanoid.Climbing,function()
 	if fclimbcon then
 		humanoid.Jump = true
 	end
 end)
 -- connection, in case if you somehow get voided (with noclip/autocollect coins)...
-connect(game:GetService("RunService").Stepped,function()
-	if you.Character then
-		char = you.Character
-		humanoid = char:FindFirstChildOfClass("Humanoid")
-	end
+connect(you.CharacterAdded,function(_nchar)
+	char = _nchar
+	humanoid = char:FindFirstChildOfClass("Humanoid")
+	wst__ = connect(humanoid:GetPropertyChangedSignal("WalkSpeed"),function()
+		if wscon then
+			changeWs()
+		end
+	end)
+	jpt__ = connect(humanoid:GetPropertyChangedSignal("JumpPower"),function()
+		if jpcon then
+			changeJp()
+		end
+	end)
+	fct__ = connect(humanoid.Climbing,function()
+		if fclimbcon then
+			humanoid.Jump = true
+		end
+	end)
 end)
 connect(game:GetService("RunService").Stepped,function()
 	if hbcon then
@@ -676,5 +689,6 @@ lib:Init()
 * 2/14/23 - closed script... (update for v3 soon.)
 * 2/22/23 - Third version released (revamped features; new ui library [orion]; added esp [experimental])
 * 2/23/23 - [Third version was broken lol] v3.1 (bug fixes)
+* 2/24/23 - Visual updates/fixes; movement fixes
 
 ]]
