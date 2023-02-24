@@ -185,8 +185,9 @@ local chams = false
 local tracers = false
 local names = false
 local roles = false
-local teamcheck = false
+local teamcheck = true
 local tracerorigin = "Bottom"
+local rainbow_ = false
 visuals:AddParagraph("ESP NOTE:","Setting to higher FOV than 120 will cause visuals to be offset to the character!")
 visuals:AddToggle({
 	Name="Enable ESP",
@@ -272,6 +273,17 @@ visuals:AddToggle({
 			teamcheck = false
 		end
 	end,
+})
+visuals:AddToggle({
+	Name="Rainbow ESP",
+	Default=false,
+	Callback=function(value)
+		if value then
+			rainbow_ = true
+		else
+			rainbow_ = false
+		end
+end
 })
 
 local fbcon = false
@@ -510,7 +522,7 @@ local function addEsp(target)
 			local mainpos,vis = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position)
 			local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position+Vector3.new(0,0.5,0))
 			local miscpos2 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position-Vector3.new(0,4,0))
-			if not teamcheck then
+			if teamcheck then
 				if isSameTeam(target) then
 					box.Visible = false
 					tracer.Visible = false
@@ -525,9 +537,33 @@ local function addEsp(target)
 					rleg.Visible = false
 				end
 			end
+			if rainbow_ then
+				box.Color = Color3.fromHSV(tick()%5/5,1,1)
+				head.Color3 = target.Character:FindFirstChild("Torso").Color
+				torso.Color3 = target.Character:FindFirstChild("Torso").Color
+				larm.Color3 = target.Character:FindFirstChild("Torso").Color
+				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
+				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				tracer.Color = target.Character:FindFirstChild("Torso").Color
+				name.Color = target.Character:FindFirstChild("Torso").Color
+				role.Color = target.Character:FindFirstChild("Torso").Color
+				text.Color = target.Character:FindFirstChild("Torso").Color
+			else
+				box.Color = target.Character:FindFirstChild("Torso").Color
+				head.Color3 = target.Character:FindFirstChild("Torso").Color
+				torso.Color3 = target.Character:FindFirstChild("Torso").Color
+				larm.Color3 = target.Character:FindFirstChild("Torso").Color
+				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
+				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
+				tracer.Color = target.Character:FindFirstChild("Torso").Color
+				name.Color = target.Character:FindFirstChild("Torso").Color
+				role.Color = target.Character:FindFirstChild("Torso").Color
+				text.Color = target.Character:FindFirstChild("Torso").Color
+			end
 			if boxes then
 				box.Visible = vis
-				box.Color = target.Character:FindFirstChild("Torso").Color
 				box.Size = Vector2.new((2350/mainpos.Z)+2.5,miscpos1.Y-miscpos2.Y)
 				box.Position = Vector2.new((mainpos.X-box.Size.X/2)-1,mainpos.Y-box.Size.Y/2)
 			else
@@ -540,12 +576,6 @@ local function addEsp(target)
 				rarm.Visible = true
 				lleg.Visible = true
 				rleg.Visible = true
-				head.Color3 = target.Character:FindFirstChild("Torso").Color
-				torso.Color3 = target.Character:FindFirstChild("Torso").Color
-				larm.Color3 = target.Character:FindFirstChild("Torso").Color
-				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
-				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
-				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
 				head.Adornee = target.Character:FindFirstChild("Head")
 				torso.Adornee = target.Character:FindFirstChild("Torso")
 				larm.Adornee = target.Character:FindFirstChild("Left Arm")
@@ -568,7 +598,6 @@ local function addEsp(target)
 			end
 			if tracers then
 				tracer.Visible = vis
-				tracer.Color = target.Character:FindFirstChild("Torso").Color
 				if tracerorigin == "Top" then
 					tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,0)
 					tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
@@ -587,7 +616,6 @@ local function addEsp(target)
 			end
 			if names then
 				name.Visible = vis
-				name.Color = target.Character:FindFirstChild("Torso").Color
 				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				name.Text = target.Name
 			else
@@ -595,7 +623,6 @@ local function addEsp(target)
 			end
 			if roles then
 				role.Visible = vis
-				role.Color = target.Character:FindFirstChild("Torso").Color
 				role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				role.Text = target.PlayerRole.Value
 			else
@@ -605,7 +632,6 @@ local function addEsp(target)
 				name.Visible = false
 				role.Visible = false
 				text.Visible = vis
-				text.Color = target.Character:FindFirstChild("Torso").Color
 				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
 				text.Text = target.Name.." | "..target.PlayerRole.Value
 			else
