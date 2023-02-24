@@ -539,16 +539,16 @@ local function addEsp(target)
 			end
 			if rainbow_ then
 				box.Color = Color3.fromHSV(tick()%5/5,1,1)
-				head.Color3 = target.Character:FindFirstChild("Torso").Color
-				torso.Color3 = target.Character:FindFirstChild("Torso").Color
-				larm.Color3 = target.Character:FindFirstChild("Torso").Color
-				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
-				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
-				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
-				tracer.Color = target.Character:FindFirstChild("Torso").Color
-				name.Color = target.Character:FindFirstChild("Torso").Color
-				role.Color = target.Character:FindFirstChild("Torso").Color
-				text.Color = target.Character:FindFirstChild("Torso").Color
+				head.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				torso.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				larm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				rarm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				lleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				rleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+				tracer.Color = Color3.fromHSV(tick()%5/5,1,1)
+				name.Color = Color3.fromHSV(tick()%5/5,1,1)
+				role.Color = Color3.fromHSV(tick()%5/5,1,1)
+				text.Color = Color3.fromHSV(tick()%5/5,1,1)
 			else
 				box.Color = target.Character:FindFirstChild("Torso").Color
 				head.Color3 = target.Character:FindFirstChild("Torso").Color
