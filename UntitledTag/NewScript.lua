@@ -466,7 +466,6 @@ connect(game:GetService("RunService").Heartbeat,function()
 		end
 	end
 end)
--- this took me forever to code this! :D
 local function addEsp(target)
 	local function addBox()
 		local box = Drawing.new("Square")
@@ -531,124 +530,138 @@ local function addEsp(target)
 		end
 	end)
 	connect(game:GetService("RunService").Stepped,function()
-		if alive(target) then
-			local mainpos,vis = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position)
-			local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position+Vector3.new(0,0.5,0))
-			local miscpos2 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position-Vector3.new(0,4,0))
-			if teamcheck then
-				if isSameTeam(target) then
+		if esp then
+			if alive(target) then
+				local mainpos,vis = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position)
+				local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position+Vector3.new(0,0.5,0))
+				local miscpos2 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position-Vector3.new(0,4,0))
+				if teamcheck then
+					if isSameTeam(target) then
+						box.Visible = false
+						tracer.Visible = false
+						name.Visible = false
+						role.Visible = false
+						text.Visible = false
+						head.Visible = false
+						torso.Visible = false
+						larm.Visible = false
+						rarm.Visible = false	
+						lleg.Visible = false
+						rleg.Visible = false
+					end
+				end
+				if rainbow_ then
+					box.Color = Color3.fromHSV(tick()%5/5,1,1)
+					head.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					torso.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					larm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					rarm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					lleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					rleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
+					tracer.Color = Color3.fromHSV(tick()%5/5,1,1)
+					name.Color = Color3.fromHSV(tick()%5/5,1,1)
+					role.Color = Color3.fromHSV(tick()%5/5,1,1)
+					text.Color = Color3.fromHSV(tick()%5/5,1,1)
+				else
+					box.Color = target.Character:FindFirstChild("Torso").Color
+					head.Color3 = target.Character:FindFirstChild("Torso").Color
+					torso.Color3 = target.Character:FindFirstChild("Torso").Color
+					larm.Color3 = target.Character:FindFirstChild("Torso").Color
+					rarm.Color3 = target.Character:FindFirstChild("Torso").Color
+					lleg.Color3 = target.Character:FindFirstChild("Torso").Color
+					rleg.Color3 = target.Character:FindFirstChild("Torso").Color
+					tracer.Color = target.Character:FindFirstChild("Torso").Color
+					name.Color = target.Character:FindFirstChild("Torso").Color
+					role.Color = target.Character:FindFirstChild("Torso").Color
+					text.Color = target.Character:FindFirstChild("Torso").Color
+				end
+				if boxes then
+					box.Visible = vis
+					box.Size = Vector2.new((2350/mainpos.Z)+2.5,miscpos1.Y-miscpos2.Y)
+					box.Position = Vector2.new((mainpos.X-box.Size.X/2)-1,mainpos.Y-box.Size.Y/2)
+				else
 					box.Visible = false
-					tracer.Visible = false
-					name.Visible = false
-					role.Visible = false
-					text.Visible = false
+				end
+				if chams then
+					head.Visible = true
+					torso.Visible = true
+					larm.Visible = true
+					rarm.Visible = true
+					lleg.Visible = true
+					rleg.Visible = true
+					head.Adornee = target.Character:FindFirstChild("Head")
+					torso.Adornee = target.Character:FindFirstChild("Torso")
+					larm.Adornee = target.Character:FindFirstChild("Left Arm")
+					rarm.Adornee = target.Character:FindFirstChild("Right Arm")
+					lleg.Adornee = target.Character:FindFirstChild("Left Leg")
+					rleg.Adornee = target.Character:FindFirstChild("Right Leg")
+					head.Size = target.Character:FindFirstChild("Head").Size
+					torso.Size = target.Character:FindFirstChild("Torso").Size
+					larm.Size = target.Character:FindFirstChild("Left Arm").Size
+					rarm.Size = target.Character:FindFirstChild("Right Arm").Size
+					lleg.Size = target.Character:FindFirstChild("Left Leg").Size
+					rleg.Size = target.Character:FindFirstChild("Right Leg").Size
+				else
 					head.Visible = false
 					torso.Visible = false
 					larm.Visible = false
-					rarm.Visible = false	
+					rarm.Visible = false
 					lleg.Visible = false
 					rleg.Visible = false
 				end
-			end
-			if rainbow_ then
-				box.Color = Color3.fromHSV(tick()%5/5,1,1)
-				head.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				torso.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				larm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				rarm.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				lleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				rleg.Color3 = Color3.fromHSV(tick()%5/5,1,1)
-				tracer.Color = Color3.fromHSV(tick()%5/5,1,1)
-				name.Color = Color3.fromHSV(tick()%5/5,1,1)
-				role.Color = Color3.fromHSV(tick()%5/5,1,1)
-				text.Color = Color3.fromHSV(tick()%5/5,1,1)
-			else
-				box.Color = target.Character:FindFirstChild("Torso").Color
-				head.Color3 = target.Character:FindFirstChild("Torso").Color
-				torso.Color3 = target.Character:FindFirstChild("Torso").Color
-				larm.Color3 = target.Character:FindFirstChild("Torso").Color
-				rarm.Color3 = target.Character:FindFirstChild("Torso").Color
-				lleg.Color3 = target.Character:FindFirstChild("Torso").Color
-				rleg.Color3 = target.Character:FindFirstChild("Torso").Color
-				tracer.Color = target.Character:FindFirstChild("Torso").Color
-				name.Color = target.Character:FindFirstChild("Torso").Color
-				role.Color = target.Character:FindFirstChild("Torso").Color
-				text.Color = target.Character:FindFirstChild("Torso").Color
-			end
-			if boxes then
-				box.Visible = vis
-				box.Size = Vector2.new((2350/mainpos.Z)+2.5,miscpos1.Y-miscpos2.Y)
-				box.Position = Vector2.new((mainpos.X-box.Size.X/2)-1,mainpos.Y-box.Size.Y/2)
+				if tracers then
+					tracer.Visible = vis
+					if tracerorigin == "Top" then
+						tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,0)
+						tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
+					elseif tracerorigin == "Middle" then
+						tracer.To = workspace.CurrentCamera.ViewportSize/2
+						tracer.From = Vector2.new(mainpos.X-1,(mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)-((miscpos1.Y-miscpos2.Y)/2))
+					elseif tracerorigin == "Bottom" then
+						tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
+						tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,1000)
+					elseif tracerorigin == "Mouse" then
+						tracer.To = game:GetService("UserInputService"):GetMouseLocation()
+						tracer.From = Vector2.new(mainpos.X-1,(mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)-((miscpos1.Y-miscpos2.Y)/2))
+					end
+				else
+					tracer.Visible = false
+				end
+				if names then
+					name.Visible = vis
+					name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
+					name.Text = target.Name
+				else
+					name.Visible = false
+				end
+				if roles then
+					role.Visible = vis
+					role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
+					role.Text = target.PlayerRole.Value
+				else
+					role.Visible = false
+				end
+				if names and roles then
+					name.Visible = false
+					role.Visible = false
+					text.Visible = vis
+					text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
+					text.Text = target.Name.." | "..target.PlayerRole.Value
+				else
+					text.Visible = false
+				end
 			else
 				box.Visible = false
-			end
-			if chams then
-				head.Visible = true
-				torso.Visible = true
-				larm.Visible = true
-				rarm.Visible = true
-				lleg.Visible = true
-				rleg.Visible = true
-				head.Adornee = target.Character:FindFirstChild("Head")
-				torso.Adornee = target.Character:FindFirstChild("Torso")
-				larm.Adornee = target.Character:FindFirstChild("Left Arm")
-				rarm.Adornee = target.Character:FindFirstChild("Right Arm")
-				lleg.Adornee = target.Character:FindFirstChild("Left Leg")
-				rleg.Adornee = target.Character:FindFirstChild("Right Leg")
-				head.Size = target.Character:FindFirstChild("Head").Size
-				torso.Size = target.Character:FindFirstChild("Torso").Size
-				larm.Size = target.Character:FindFirstChild("Left Arm").Size
-				rarm.Size = target.Character:FindFirstChild("Right Arm").Size
-				lleg.Size = target.Character:FindFirstChild("Left Leg").Size
-				rleg.Size = target.Character:FindFirstChild("Right Leg").Size
-			else
+				tracer.Visible = false
+				name.Visible = false
+				role.Visible = false
+				text.Visible = false
 				head.Visible = false
 				torso.Visible = false
 				larm.Visible = false
-				rarm.Visible = false
+				rarm.Visible = false	
 				lleg.Visible = false
 				rleg.Visible = false
-			end
-			if tracers then
-				tracer.Visible = vis
-				if tracerorigin == "Top" then
-					tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,0)
-					tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
-				elseif tracerorigin == "Middle" then
-					tracer.To = workspace.CurrentCamera.ViewportSize/2
-					tracer.From = Vector2.new(mainpos.X-1,(mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)-((miscpos1.Y-miscpos2.Y)/2))
-				elseif tracerorigin == "Bottom" then
-					tracer.From = Vector2.new(mainpos.X-1,mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)
-					tracer.To = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2,1000)
-				elseif tracerorigin == "Mouse" then
-					tracer.To = game:GetService("UserInputService"):GetMouseLocation()
-					tracer.From = Vector2.new(mainpos.X-1,(mainpos.Y+(miscpos1.Y-miscpos2.Y)/2)-((miscpos1.Y-miscpos2.Y)/2))
-				end
-			else
-				tracer.Visible = false
-			end
-			if names then
-				name.Visible = vis
-				name.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
-				name.Text = target.Name
-			else
-				name.Visible = false
-			end
-			if roles then
-				role.Visible = vis
-				role.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
-				role.Text = target.PlayerRole.Value
-			else
-				role.Visible = false
-			end
-			if names and roles then
-				name.Visible = false
-				role.Visible = false
-				text.Visible = vis
-				text.Position = Vector2.new(workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position).X,workspace.CurrentCamera:WorldToViewportPoint(target.Character.Head.Position).Y-20)
-				text.Text = target.Name.." | "..target.PlayerRole.Value
-			else
-				text.Visible = false
 			end
 		else
 			box.Visible = false
