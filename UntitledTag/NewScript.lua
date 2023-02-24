@@ -1,6 +1,10 @@
 -- Version: 3.1
 
 
+-- no annoying errors :|
+for _,__error in next,getconnections(game:GetService("ScriptContext").Error) do
+	__error:Disable()
+end
 
 local you = game.Players.LocalPlayer
 local lighting = game.Lighting
@@ -132,6 +136,7 @@ _humanoid:AddSlider({
 	end,
 })
 local fclimbcon,noclipcon = false,false
+local fmovecon = false
 local infj = false
 physical:AddToggle({
 	Name="Infinite Jump",
@@ -152,6 +157,17 @@ physical:AddToggle({
 			fclimbcon = true
 		else
 			fclimbcon = false
+		end
+	end,
+})
+physical:AddToggle({
+	Name="Free Move",
+	Default=false,
+	Callback=function(value)
+		if value then
+			fmovecon = true
+		else
+			fmovecon = false
 		end
 	end,
 })
@@ -407,6 +423,9 @@ connect(game:GetService("RunService").Stepped,function()
 				humanoid.RootPart.CFrame = v.CFrame
 			end
 		end
+	end
+	if fmovecon then
+		char.LockMoveVector.Value = false
 	end
 end)
 connect(game:GetService("UserInputService").JumpRequest,function()
@@ -702,6 +721,6 @@ lib:Init()
 * 2/14/23 - closed script... (update for v3 soon.)
 * 2/22/23 - Third version released (revamped features; new ui library [orion]; added esp [experimental])
 * 2/23/23 - [Third version was broken lol] v3.1 (bug fixes)
-* 2/24/23 - Visual updates/fixes; movement fixes
+* 2/24/23 - Visual updates/fixes; movement fixes; free-move
 
 ]]
