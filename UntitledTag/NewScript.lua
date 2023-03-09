@@ -185,7 +185,7 @@ physical:AddToggle({
 
 local atcoin = false
 exp_main:AddToggle({
-	Name="Autocollect Coins",
+	Name="Autocollect Coins [ALIVE ONLY!]",
 	Default=false,
 	Callback=function(value)
 		if value then
@@ -204,7 +204,6 @@ local roles = false
 local teamcheck = true
 local tracerorigin = "Bottom"
 local rainbow_ = false
-visuals:AddParagraph("ESP NOTE:","Setting to higher FOV than 120 will cause visuals to be offset to the character!")
 visuals:AddToggle({
 	Name="Enable ESP",
 	Default=false,
@@ -314,15 +313,15 @@ misc:AddToggle({
 		end
 	end,
 })
-local acontcon = false
+local acccon = false
 misc:AddToggle({
-	Name="Anti-HighContrast",
+	Name="Anti-Color Change",
 	Default=false,
 	Callback=function(value)
 		if value then
-			acontcon = true
+			acccon = true
 		else
-			acontcon = false
+			acccon = false
 		end
 	end,
 })
@@ -410,17 +409,21 @@ connect(game:GetService("RunService").Stepped,function()
 			end
 		end
 	end
-	if acontcon then
+	if acccon then
 		for _,i in next,lighting:GetChildren() do
-			if i:IsA("ColorCorrection") and i.Contrast == -2 and i.Saturation == .1 then -- high contrast element
-				i:Destroy()
+			if i:IsA("ColorCorrectionEffect") then
+				if i.Name ~= "VHS" and i.Name ~= "Deepfry" then
+					i:Destroy()
+				end
 			end
 		end
 	end
 	if atcoin then
-		for _,v in pairs(workspace:GetDescendants()) do
-			if v:IsA("MeshPart") and v.MeshId == "rbxassetid://8483581926" then
-				humanoid.RootPart.CFrame = v.CFrame
+		if you.PlayerRole.Value ~= "Dead" then -- alive check policy
+			for _,v in pairs(workspace:GetDescendants()) do
+				if v:IsA("MeshPart") and v.MeshId == "rbxassetid://8483581926" then
+					humanoid.RootPart.CFrame = v.CFrame
+				end
 			end
 		end
 	end
@@ -555,7 +558,7 @@ local function addEsp(target)
 				local miscpos1 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChild("Head").Position+Vector3.new(0,0.5,0))
 				local miscpos2 = workspace.CurrentCamera:WorldToViewportPoint(target.Character:FindFirstChildOfClass("Humanoid").RootPart.Position-Vector3.new(0,4,0))
 				if teamcheck then
-					if isSameTeam(target) then
+					if isSameTeam(target) or target.PlayerRole.Value == "" then
 						box.Visible = false
 						tracer.Visible = false
 						name.Visible = false
@@ -722,5 +725,6 @@ lib:Init()
 * 2/22/23 - Third version released (revamped features; new ui library [orion]; added esp [experimental])
 * 2/23/23 - [Third version was broken lol] v3.1 (bug fixes)
 * 2/24/23 - Visual updates/fixes; movement fixes; free-move
+* 3/9/23 - Visual fixes; coin-collect alive check policy; replaced anti-highcontrast w/ anti-colorchange [vhs and deepfry not included]
 
 ]]
